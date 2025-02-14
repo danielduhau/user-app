@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService, User } from '../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-form',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.css']
 })
@@ -30,12 +34,16 @@ export class UserFormComponent implements OnInit {
   saveUser(): void {
     if (this.isEditing) {
       this.userService.updateUser(this.user.id, this.user).subscribe(() => {
-        this.router.navigate(['/users']);
+        this.navigateToUsers();
       });
     } else {
       this.userService.createUser(this.user).subscribe(() => {
-        this.router.navigate(['/users']);
+        this.navigateToUsers();
       });
     }
+  }
+
+  navigateToUsers() {
+    this.router.navigate(['/users']);
   }
 }

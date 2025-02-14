@@ -1,34 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService, User } from '../../services/user.service';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent {
   users: User[] = [];
 
   constructor(private userService: UserService, private router: Router) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadUsers();
   }
 
-  loadUsers(): void {
-    this.userService.getUsers().subscribe(users => {
-      this.users = users;
+  loadUsers() {
+    this.userService.getUsers().subscribe(data => {
+      this.users = data;
     });
   }
 
-  deleteUser(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este usuário?')) {
-      this.userService.deleteUser(id).subscribe(() => {
-        this.loadUsers();
-      });
-    }
+  deleteUser(id: number) {
+    this.userService.deleteUser(id).subscribe(() => {
+      this.users = this.users.filter(user => user.id !== id);
+    });
   }
+
 
   editUser(id: number): void {
     this.router.navigate(['/users/edit', id]);
